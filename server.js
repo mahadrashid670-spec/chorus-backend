@@ -1,4 +1,6 @@
+
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 
@@ -17,13 +19,15 @@ app.use('/api/billing/webhook', express.raw({ type: '*/*' }));
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN || '*' }));
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('Chorus API is running.'));
-
 app.use('/api/auth', authRoutes);
 app.use('/api/me', businessRoutes);
 app.use('/api', testimonialRoutes); // exposes /api/me/testimonials/* and /api/public/*
 app.use('/embed', embedRoutes);
 app.use('/api/billing', billingRoutes);
+
+// Serves public/index.html (the Chorus app) at the root URL, and any other
+// static assets placed in /public.
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res) => res.status(404).json({ error: 'Not found' }));
 
