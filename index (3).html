@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus — Collect and show off your best reviews</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗣️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F7F5F0;
+    --ink: #211E24;
+    --plum: #6E2F53;
+    --plum-deep: #4E2039;
+    --amber: #DE9A3C;
+    --line: #DFD9CE;
+    --card: #FFFFFF;
+    --muted: #77726C;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Public Sans', -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper: #1B181D;
+      --ink: #F2EEE9;
+      --plum: #C98BB2;
+      --plum-deep: #E7B8D4;
+      --amber: #F0B65C;
+      --line: #38333A;
+      --card: #242026;
+      --muted: #A69EA0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #1B181D;
+    --ink: #F2EEE9;
+    --plum: #C98BB2;
+    --plum-deep: #E7B8D4;
+    --amber: #F0B65C;
+    --line: #38333A;
+    --card: #242026;
+    --muted: #A69EA0;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+
+  /* NAV */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 24px;border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-family:var(--font-display);
+    font-size:22px;font-weight:600;
+    display:flex;align-items:center;gap:8px;
+    letter-spacing:-0.01em;
+  }
+  .brand .mark{color:var(--plum);}
+  .nav-links{display:flex;gap:8px;align-items:center;}
+  button, .btn{
+    font-family:var(--font-body);
+    font-weight:600;
+    border:none;
+    cursor:pointer;
+    border-radius:7px;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .btn-ghost{
+    background:transparent;color:var(--ink);
+    padding:10px 16px;font-size:14px;
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{background:var(--card);}
+  .btn-primary{
+    background:var(--plum);color:#fff;
+    padding:10px 18px;font-size:14px;
+  }
+  .btn-primary:hover{transform:translateY(-1px);background:var(--plum-deep);}
+  .btn-primary:active{transform:translateY(0);}
+
+  /* HERO */
+  .hero{padding:76px 0 64px;}
+  .hero-quote-mark{
+    font-family:var(--font-display);
+    font-size:64px;color:var(--amber);line-height:0.6;
+    margin-bottom:8px;
+  }
+  h1.hero-head{
+    font-family:var(--font-display);
+    font-size:clamp(36px,5.4vw,58px);
+    font-weight:500;
+    line-height:1.08;
+    letter-spacing:-0.01em;
+    max-width:780px;
+    margin:0 0 20px;
+  }
+  .hero-sub{
+    font-size:18px;color:var(--muted);max-width:520px;margin:0 0 32px;
+  }
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;}
+
+  /* WALL STRIP */
+  .wall-strip{
+    margin-top:56px;
+    display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;
+    scrollbar-width:none;
+  }
+  .wall-strip::-webkit-scrollbar{display:none;}
+  .strip-card{
+    flex:0 0 auto;width:260px;
+    background:var(--card);border:1px solid var(--line);
+    border-radius:10px;padding:18px;
+  }
+  .strip-card p{font-size:14.5px;margin:0 0 12px;}
+  .strip-card .who{font-size:13px;color:var(--muted);font-weight:600;}
+  .stars{color:var(--amber);letter-spacing:2px;font-size:13px;margin-bottom:8px;}
+
+  /* SECTIONS */
+  section{padding:56px 0;border-top:1px solid var(--line);}
+  .section-head{
+    font-family:var(--font-display);
+    font-size:clamp(26px,3vw,34px);
+    font-weight:500;margin:0 0 12px;max-width:600px;
+  }
+  .section-sub{color:var(--muted);max-width:560px;margin:0 0 36px;font-size:15.5px;}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;}
+  .step .n{font-family:var(--font-display);font-size:15px;color:var(--plum);margin-bottom:10px;font-weight:600;}
+  .step h3{font-size:16px;margin:0 0 8px;font-family:var(--font-body);}
+  .step p{font-size:14px;color:var(--muted);margin:0;}
+
+  .pricing{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .price-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px;}
+  .price-card.featured{border-color:var(--plum);position:relative;}
+  .price-card h3{font-family:var(--font-display);font-size:20px;margin:0 0 6px;font-weight:500;}
+  .price{font-family:var(--font-display);font-size:34px;margin:8px 0 18px;}
+  .price span{font-size:14px;color:var(--muted);font-family:var(--font-body);}
+  .price-card ul{list-style:none;padding:0;margin:0 0 20px;}
+  .price-card li{padding:6px 0;font-size:14px;color:var(--muted);border-top:1px solid var(--line);}
+  .price-card li:first-child{border-top:none;}
+
+  footer{padding:32px 0;text-align:center;color:var(--muted);font-size:13px;}
+
+  /* APP VIEWS */
+  .app-view{display:none;padding:40px 0 80px;}
+  .app-view.active{display:block;}
+  .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+  .app-header h2{font-family:var(--font-display);font-size:28px;font-weight:500;margin:0;}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--card);border:1px solid var(--line);
+    padding:6px 12px;border-radius:20px;font-size:13px;color:var(--muted);
+  }
+  .pill code{background:none;color:var(--plum);font-weight:600;}
+
+  .grid-2{display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;}
+  @media(max-width:800px){.grid-2{grid-template-columns:1fr;} .pricing{grid-template-columns:1fr;} .steps{grid-template-columns:1fr;}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;}
+  .card h3{margin:0 0 4px;font-size:16px;font-family:var(--font-body);}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 16px;}
+
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;}
+  label:first-child{margin-top:0;}
+  input[type=text], input[type=email], textarea, select{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:14px;
+  }
+  textarea{resize:vertical;min-height:90px;}
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--plum);outline-offset:1px;}
+
+  .t-list{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+  .t-item{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--paper);}
+  .t-item .row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .t-item p{margin:8px 0;font-size:14px;}
+  .t-meta{font-size:12.5px;color:var(--muted);}
+  .t-actions{display:flex;gap:8px;}
+  .t-actions button{padding:6px 10px;font-size:12.5px;border:1px solid var(--line);background:var(--card);color:var(--ink);}
+  .t-actions button.approved{background:var(--plum);color:#fff;border-color:var(--plum);}
+  .empty{color:var(--muted);font-size:14px;padding:24px 0;text-align:center;}
+
+  .embed-box{
+    background:var(--ink);color:var(--paper);border-radius:8px;padding:16px;
+    font-family:monospace;font-size:12.5px;white-space:pre-wrap;word-break:break-all;margin-top:10px;
+  }
+  :root[data-theme="dark"] .embed-box{background:#0f0d10;}
+
+  .wall-preview{display:flex;flex-direction:column;gap:12px;margin-top:14px;}
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:8px;
+    font-size:13.5px;opacity:0;pointer-events:none;transition:all .25s ease;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .form-success{text-align:center;padding:40px 0;}
+  .form-success .big{font-family:var(--font-display);font-size:26px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><span class="mark">“</span>Chorus</div>
+  <div class="nav-links">
+    <button class="btn-ghost" onclick="showView('landing')">Home</button>
+    <button class="btn-ghost" onclick="showView('collect')">Try the form</button>
+    <button class="btn-primary" onclick="showView('dashboard')">Open dashboard</button>
+  </div>
+</nav>
+
+<!-- LANDING -->
+<div id="view-landing" class="app-view active">
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-quote-mark">”</div>
+      <h1 class="hero-head">Turn happy customers into your best sales page.</h1>
+      <p class="hero-sub">Send one link. Customers leave a quote in under a minute. You get a review wall you can drop into your site with a single snippet — no dev work, no awkward screenshots.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="showView('dashboard')">Start collecting — free</button>
+        <button class="btn-ghost" onclick="showView('collect')">See the customer form</button>
+      </div>
+
+      <div class="wall-strip" id="landingStrip"></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2 class="section-head">How it works</h2>
+      <p class="section-sub">Three steps, none of which involve you chasing anyone down for a screenshot.</p>
+      <div class="steps">
+        <div class="step"><div class="n">First</div><h3>Share your link</h3><p>Send it after a sale, a project wraps, or a good support chat — while the moment's still fresh.</p></div>
+        <div class="step"><div class="n">Then</div><h3>They write a line or two</h3><p>No account, no app to download. Just a name, a quote, and a star rating.</p></div>
+        <div class="step"><div class="n">Finally</div><h3>You publish the good ones</h3><p>Approve what you want to show, copy one snippet, done. Your wall updates itself from then on.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="section-head">Simple pricing</h2>
+      <p class="section-sub">Start free. Upgrade only once it's actually working for you.</p>
+      <div class="pricing">
+        <div class="price-card">
+          <h3>Starter</h3>
+          <div class="price">$0</div>
+          <ul>
+            <li>Up to 15 testimonials</li>
+            <li>1 collection link</li>
+            <li>Basic embeddable wall</li>
+          </ul>
+          <button class="btn-ghost" style="width:100%" onclick="showView('dashboard')">Get started</button>
+        </div>
+        <div class="price-card featured">
+          <h3>Pro</h3>
+          <div class="price">$19<span>/mo</span></div>
+          <ul>
+            <li>Unlimited testimonials</li>
+            <li>Custom questions &amp; branding</li>
+            <li>Priority styling on your wall</li>
+          </ul>
+          <button class="btn-primary" style="width:100%" onclick="showView('dashboard')">Go Pro</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Built with Chorus — a small tool for a big wall of proof.</footer>
+</div>
+
+<!-- COLLECT (public-facing form) -->
+<div id="view-collect" class="app-view">
+  <div class="wrap" style="max-width:560px;padding-top:48px;">
+
+    <div id="collectMissingSlug" style="display:none;">
+      <h2 style="font-family:var(--font-display);font-weight:500;font-size:24px;">No collection link specified</h2>
+      <p style="color:var(--muted);">This page needs a <code>?slug=your-business</code> in the URL to know whose form to show. Open your dashboard and copy your real collection link from there.</p>
+      <button class="btn-primary" onclick="showView('dashboard')">Open dashboard</button>
+    </div>
+
+    <div id="collectNotFound" style="display:none;">
+      <h2 style="font-family:var(--font-display);font-weight:500;font-size:24px;">We couldn't find that business</h2>
+      <p style="color:var(--muted);">Double check the link you were given.</p>
+    </div>
+
+    <div id="collectForm" style="display:none;">
+      <p class="pill" style="margin-bottom:18px;">This is what <code id="bizNameLabel1">your customer</code> sees</p>
+      <h2 style="font-family:var(--font-display);font-weight:500;font-size:28px;margin:0 0 8px;" id="collectQuestion">How was your experience with us?</h2>
+      <p style="color:var(--muted);margin:0 0 24px;font-size:14.5px;">Takes under a minute. Thank you for taking the time.</p>
+
+      <label for="cName">Your name</label>
+      <input type="text" id="cName" placeholder="Jamie Osei">
+
+      <label for="cRole">Role / company <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+      <input type="text" id="cRole" placeholder="Founder, Studio Loop">
+
+      <label>Rating</label>
+      <div class="stars" id="starPicker" style="cursor:pointer;font-size:22px;">☆☆☆☆☆</div>
+
+      <label for="cQuote">Your testimonial</label>
+      <textarea id="cQuote" placeholder="What changed for you? What would you tell someone on the fence?"></textarea>
+
+      <div style="margin-top:20px;">
+        <button class="btn-primary" onclick="submitTestimonial()">Submit testimonial</button>
+      </div>
+    </div>
+    <div id="collectSuccess" class="form-success" style="display:none;">
+      <div class="big">Thank you!</div>
+      <p style="color:var(--muted);">Your testimonial was sent. <span id="bizNameLabel2">The business</span> may feature it on their site.</p>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="view-dashboard" class="app-view">
+  <div class="wrap">
+
+    <!-- Shown when logged out -->
+    <div id="authCard" class="card" style="max-width:420px;margin:20px auto;">
+      <div style="display:flex;gap:8px;margin-bottom:18px;">
+        <button class="btn-ghost" id="tabLoginBtn" onclick="setAuthTab('login')" style="flex:1;">Log in</button>
+        <button class="btn-ghost" id="tabSignupBtn" onclick="setAuthTab('signup')" style="flex:1;">Sign up</button>
+      </div>
+
+      <div id="loginPane">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com">
+        <label for="loginPassword">Password</label>
+        <input type="text" id="loginPassword" placeholder="••••••••">
+        <button class="btn-primary" style="width:100%;margin-top:16px;" onclick="doLogin()">Log in</button>
+      </div>
+
+      <div id="signupPane" style="display:none;">
+        <label for="signupBizName">Business name</label>
+        <input type="text" id="signupBizName" placeholder="Studio Loop">
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com">
+        <label for="signupPassword">Password</label>
+        <input type="text" id="signupPassword" placeholder="At least 8 characters">
+        <button class="btn-primary" style="width:100%;margin-top:16px;" onclick="doSignup()">Create account</button>
+      </div>
+
+      <p id="authError" style="color:#B3435A;font-size:13px;margin-top:12px;display:none;"></p>
+    </div>
+
+    <!-- Shown when logged in -->
+    <div id="dashboardContent" style="display:none;">
+      <div class="app-header">
+        <h2>Your dashboard</h2>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <span class="pill">Plan: <code id="planDisplay">free</code></span>
+          <button class="btn-primary" id="upgradeBtn" onclick="startCheckout()" style="display:none;">Upgrade to Pro — $19/mo</button>
+          <button class="btn-ghost" onclick="copyCollectLink()">Copy collection link</button>
+          <button class="btn-ghost" onclick="doLogout()">Log out</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <div class="card">
+            <h3>Collection page settings</h3>
+            <p class="hint">This is what customers fill out when they open your link.</p>
+            <label for="settingsBizName">Business name</label>
+            <input type="text" id="settingsBizName" placeholder="Studio Loop" onchange="saveSettings()">
+            <label for="settingsQuestion">Question to ask</label>
+            <input type="text" id="settingsQuestion" placeholder="How was your experience with us?" onchange="saveSettings()">
+          </div>
+
+        <div class="card">
+          <h3>Testimonials</h3>
+          <p class="hint">Approve the ones you want to show on your wall.</p>
+          <div class="t-list" id="tList"></div>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="card">
+          <h3>Live wall preview</h3>
+          <p class="hint">Only approved testimonials show up here.</p>
+          <div class="wall-preview" id="wallPreview"></div>
+        </div>
+
+        <div class="card">
+          <h3>Embed on your site</h3>
+          <p class="hint">Paste this snippet wherever you want the wall to appear.</p>
+          <div class="embed-box" id="embedCode"></div>
+          <button class="btn-ghost" style="margin-top:12px;width:100%;" onclick="copyEmbed()">Copy snippet</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- Real backend connection ----------
+// Frontend and API are served from the same Railway app, so calls are relative
+// (no cross-origin request needed, no CORS/CSP issues either).
+const API_BASE = '';
+
+// Only the login token lives in localStorage - never real data.
+function getToken(){ try{ return localStorage.getItem('chorus_token'); }catch(e){ return null; } }
+function setToken(t){ try{ t ? localStorage.setItem('chorus_token', t) : localStorage.removeItem('chorus_token'); }catch(e){} }
+
+let currentBusiness = null; // { id, email, bizName, slug, question, plan }
+let currentTestimonials = [];
+let currentRating = 5;
+
+async function api(path, opts = {}){
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  const token = getToken();
+  if(token) headers['Authorization'] = 'Bearer ' + token;
+
+  const res = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+  let data = null;
+  try{ data = await res.json(); }catch(e){ /* no body */ }
+
+  if(!res.ok){
+    throw new Error((data && data.error) || `Request failed (${res.status})`);
+  }
+  return data;
+}
+
+function showView(name){
+  document.querySelectorAll('.app-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(name === 'dashboard') loadDashboard();
+  if(name === 'collect') loadCollectForm();
+}
+
+function starString(n){
+  let s = '';
+  for(let i=1;i<=5;i++) s += (i<=n ? '★' : '☆');
+  return s;
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+// ---------- Landing page (static example cards - not tied to real data) ----------
+function renderLandingStrip(){
+  const examples = [
+    {rating:5, quote:'We went from zero reviews on our site to a full wall in about a week.', name:'Amara K.', role:'Founder, Loomstack'},
+    {rating:5, quote:'Sent the link after every project wrap. Way less awkward than a screenshot on WhatsApp.', name:'Farid R.', role:'Freelance designer'},
+    {rating:4, quote:'Simple, does the one job well. Upgraded within a month.', name:'Priya N.', role:'Ops lead, Fenwick Co.'}
+  ];
+  document.getElementById('landingStrip').innerHTML = examples.map(t => `
+    <div class="strip-card">
+      <div class="stars">${starString(t.rating)}</div>
+      <p>"${escapeHtml(t.quote)}"</p>
+      <div class="who">${escapeHtml(t.name)} · ${escapeHtml(t.role)}</div>
+    </div>
+  `).join('');
+}
+
+// ---------- Auth ----------
+function setAuthTab(tab){
+  document.getElementById('loginPane').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('signupPane').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('authError').style.display = 'none';
+}
+
+function showAuthError(msg){
+  const el = document.getElementById('authError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if(!email || !password) return showAuthError('Enter your email and password');
+  try{
+    const data = await api('/api/auth/login', { method:'POST', body: JSON.stringify({ email, password }) });
+    setToken(data.token);
+    currentBusiness = data.business;
+    await loadDashboard();
+  }catch(err){ showAuthError(err.message); }
+}
+
+async function doSignup(){
+  const bizName = document.getElementById('signupBizName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  if(!bizName || !email || !password) return showAuthError('Fill in all three fields');
+  try{
+    const data = await api('/api/auth/register', { method:'POST', body: JSON.stringify({ bizName, email, password }) });
+    setToken(data.token);
+    currentBusiness = data.business;
+    await loadDashboard();
+  }catch(err){ showAuthError(err.message); }
+}
+
+function doLogout(){
+  setToken(null);
+  currentBusiness = null;
+  currentTestimonials = [];
+  document.getElementById('authCard').style.display = 'block';
+  document.getElementById('dashboardContent').style.display = 'none';
+}
+
+// ---------- Dashboard (real API) ----------
+async function loadDashboard(){
+  if(!getToken()){
+    document.getElementById('authCard').style.display = 'block';
+    document.getElementById('dashboardContent').style.display = 'none';
+    return;
+  }
+  try{
+    currentBusiness = await api('/api/me');
+    currentTestimonials = await api('/api/me/testimonials');
+    document.getElementById('authCard').style.display = 'none';
+    document.getElementById('dashboardContent').style.display = 'block';
+    renderDashboard();
+  }catch(err){
+    // token expired or invalid
+    doLogout();
+    showAuthError('Please log in again');
+  }
+}
+
+function renderDashboard(){
+  document.getElementById('settingsBizName').value = currentBusiness.bizName;
+  document.getElementById('settingsQuestion').value = currentBusiness.question;
+  document.getElementById('planDisplay').textContent = currentBusiness.plan;
+  document.getElementById('upgradeBtn').style.display = currentBusiness.plan === 'free' ? 'inline-block' : 'none';
+
+  const list = document.getElementById('tList');
+  if(currentTestimonials.length === 0){
+    list.innerHTML = `<div class="empty">No testimonials yet. Share your collection link to get your first one.</div>`;
+  } else {
+    list.innerHTML = currentTestimonials.map(t => `
+      <div class="t-item">
+        <div class="row">
+          <div>
+            <div class="stars">${starString(t.rating)}</div>
+            <div class="t-meta">${escapeHtml(t.name)}${t.role ? ' · '+escapeHtml(t.role) : ''}</div>
+          </div>
+          <div class="t-actions">
+            <button class="${t.approved ? 'approved' : ''}" onclick="toggleApprove('${t.id}', ${!t.approved})">${t.approved ? 'Approved ✓' : 'Approve'}</button>
+            <button onclick="deleteTestimonial('${t.id}')">Delete</button>
+          </div>
+        </div>
+        <p>${escapeHtml(t.quote)}</p>
+      </div>
+    `).join('');
+  }
+
+  const approved = currentTestimonials.filter(t=>t.approved);
+  document.getElementById('wallPreview').innerHTML = approved.map(t => `
+    <div class="t-item" style="background:var(--card);">
+      <div class="stars">${starString(t.rating)}</div>
+      <p>"${escapeHtml(t.quote)}"</p>
+      <div class="t-meta">${escapeHtml(t.name)}${t.role ? ' · '+escapeHtml(t.role) : ''}</div>
+    </div>
+  `).join('') || `<div class="empty">Approve a testimonial to see it here.</div>`;
+
+  document.getElementById('embedCode').textContent =
+`<script src="${location.origin}/embed/${currentBusiness.slug}.js"><\/script>
+<div id="chorus-wall"></div>`;
+}
+
+async function startCheckout(){
+  try{
+    const data = await api('/api/billing/checkout-url', { method:'GET' });
+    if(data.checkoutUrl){
+      window.location.href = data.checkoutUrl;
+    }
+  }catch(err){
+    showToast(err.message);
+  }
+}
+
+async function saveSettings(){
+  const bizName = document.getElementById('settingsBizName').value.trim();
+  const question = document.getElementById('settingsQuestion').value.trim();
+  try{
+    await api('/api/me', { method:'PATCH', body: JSON.stringify({ bizName, question }) });
+    currentBusiness.bizName = bizName;
+    currentBusiness.question = question;
+    showToast('Settings saved');
+  }catch(err){ showToast(err.message); }
+}
+
+async function toggleApprove(id, approved){
+  try{
+    await api(`/api/me/testimonials/${id}`, { method:'PATCH', body: JSON.stringify({ approved }) });
+    const t = currentTestimonials.find(x=>x.id===id);
+    if(t) t.approved = approved;
+    renderDashboard();
+  }catch(err){ showToast(err.message); }
+}
+
+async function deleteTestimonial(id){
+  try{
+    await api(`/api/me/testimonials/${id}`, { method:'DELETE' });
+    currentTestimonials = currentTestimonials.filter(x=>x.id!==id);
+    renderDashboard();
+  }catch(err){ showToast(err.message); }
+}
+
+function copyCollectLink(){
+  const link = `${location.origin}${location.pathname}?slug=${currentBusiness.slug}`;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(link).then(()=>showToast('Collection link copied')).catch(()=>showToast(link));
+  } else {
+    showToast(link);
+  }
+}
+
+function copyEmbed(){
+  const text = document.getElementById('embedCode').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>showToast('Snippet copied')).catch(()=>showToast('Could not copy — select manually'));
+  } else {
+    showToast('Select the snippet manually to copy');
+  }
+}
+
+// ---------- Public collect form (real API, driven by ?slug=) ----------
+const starPicker = document.getElementById('starPicker');
+starPicker.addEventListener('click', (e)=>{
+  const rect = starPicker.getBoundingClientRect();
+  const rel = (e.clientX - rect.left) / rect.width;
+  currentRating = Math.max(1, Math.min(5, Math.ceil(rel*5)));
+  starPicker.textContent = starString(currentRating);
+});
+
+function getSlugFromUrl(){
+  return new URLSearchParams(location.search).get('slug');
+}
+
+async function loadCollectForm(){
+  document.getElementById('collectMissingSlug').style.display = 'none';
+  document.getElementById('collectNotFound').style.display = 'none';
+  document.getElementById('collectForm').style.display = 'none';
+  document.getElementById('collectSuccess').style.display = 'none';
+
+  const slug = getSlugFromUrl();
+  if(!slug){
+    document.getElementById('collectMissingSlug').style.display = 'block';
+    return;
+  }
+
+  try{
+    const business = await fetch(`${API_BASE}/api/public/${slug}`).then(r => {
+      if(!r.ok) throw new Error('not found');
+      return r.json();
+    });
+    document.getElementById('bizNameLabel1').textContent = business.bizName;
+    document.getElementById('bizNameLabel2').textContent = business.bizName;
+    document.getElementById('collectQuestion').textContent = business.question;
+    document.getElementById('collectForm').style.display = 'block';
+    document.getElementById('collectForm').dataset.slug = slug;
+    currentRating = 5;
+    starPicker.textContent = starString(5);
+  }catch(err){
+    document.getElementById('collectNotFound').style.display = 'block';
+  }
+}
+
+async function submitTestimonial(){
+  const slug = document.getElementById('collectForm').dataset.slug;
+  const name = document.getElementById('cName').value.trim();
+  const role = document.getElementById('cRole').value.trim();
+  const quote = document.getElementById('cQuote').value.trim();
+  if(!name || !quote){
+    showToast('Add your name and a quote first');
+    return;
+  }
+  try{
+    const res = await fetch(`${API_BASE}/api/public/${slug}/testimonials`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, role, quote, rating: currentRating })
+    });
+    if(!res.ok){
+      const data = await res.json().catch(()=>({}));
+      throw new Error(data.error || 'Could not submit');
+    }
+    document.getElementById('collectForm').style.display = 'none';
+    document.getElementById('collectSuccess').style.display = 'block';
+  }catch(err){
+    showToast(err.message);
+  }
+}
+
+// ---------- Boot ----------
+renderLandingStrip();
+if(getSlugFromUrl()){
+  showView('collect');
+} else if(getToken()){
+  showView('dashboard');
+}
+</script>
+</body>
+</html>

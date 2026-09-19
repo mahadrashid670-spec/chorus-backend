@@ -11,10 +11,6 @@ const billingRoutes = require('./routes/billing');
 
 const app = express();
 
-// Billing webhook needs the raw body for signature verification, so it must
-// be mounted BEFORE express.json() touches the request.
-app.use('/api/billing/webhook', express.raw({ type: '*/*' }));
-
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN || '*' }));
 app.use(express.json());
 
